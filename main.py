@@ -1,3 +1,5 @@
+import codecs
+
 __author__ = 'egoing'
 import sys, os, zlib
 from abc import ABCMeta, abstractmethod
@@ -11,26 +13,46 @@ class Data(metaclass=ABCMeta):
         self.filepath = filepath;
         self.parse()
     def __str__(self):
-        return self._info['type']+'\t'+self._info['data']
+        return self.symbol()+self._info['type']+'\t\t'+self._info['data']
     @abstractmethod
     def parse(self):
         pass
     @abstractmethod
     def info(self):
+        pass
+    @abstractmethod
+    def symbol(self):
         pass
 
 class BlobData(Data):
     def parse(self):
         fileinfo = os.stat(self.filepath);
         compressed_content = open(self.filepath, 'rb').read()
+        data = ''
+        try:
+            data = zlib.decompress(compressed_content).decode('utf-8')
+        except:
+            pass
         self._info = {
             'type' : 'BLOB',
             'name' : self.filepath,
-            'data' : str(zlib.decompress(compressed_content)),
+            'data' : data,
             'mtime' : fileinfo.st_mtime
         }
     def info(self):
         return self._info
+    def symbol(self):
+        return "@"
+    def __str__(self):
+        import re
+        p = re.compile('^(^.+?)\s(\d+)\x00(.+)')
+        m = p.match(self._info['data'])
+        subtype = '\t'
+        try:
+            subtype = m.group(1)
+        except AttributeError:
+            pass
+        return self.symbol()+self._info['type']+':'+subtype+'\t'+self._info['name']
 
 class RefData(Data):
     def parse(self):
@@ -39,11 +61,13 @@ class RefData(Data):
         self._info = {
             'type' : 'REFE',
             'name' : self.filepath,
-            'data' : str(content),
+            'data' : content.decode('utf-8'),
             'mtime' : fileinfo.st_mtime
         }
     def info(self):
         return self._info
+    def symbol(self):
+        return "#"
 
 dlist = []
 
