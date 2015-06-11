@@ -4,6 +4,8 @@ __author__ = 'egoing'
 import sys, os, zlib
 from abc import ABCMeta, abstractmethod
 
+LIST_SIZE = 30
+
 #path = sys.argv[1]
 
 class Data(metaclass=ABCMeta):
@@ -13,7 +15,7 @@ class Data(metaclass=ABCMeta):
         self.filepath = filepath;
         self.parse()
     def __str__(self):
-        return self.symbol()+self._info['type']+'\t\t'+self._info['data']
+        return self.symbol()+self._info['type']+','+self._info['data']
     @abstractmethod
     def parse(self):
         pass
@@ -24,18 +26,19 @@ class Data(metaclass=ABCMeta):
     def symbol(self):
         pass
 
-class BlobData(Data):
+class ObjectData(Data):
     def parse(self):
         fileinfo = os.stat(self.filepath);
-        compressed_content = open(self.filepath, 'rb').read()
-        data = ''
-        try:
-            data = zlib.decompress(compressed_content).decode('utf-8')
-        except:
-            pass
+        _fileinfo = os.path.split(self.filepath)
+        object = _fileinfo[0][-2:] + _fileinfo[1]
+        import subprocess
+        p = subprocess.Popen("git cat-file -p "+object, shell=True, stdout=subprocess.PIPE)
+        data = p.communicate()[0].decode('utf-8').strip()
+        p = subprocess.Popen("git cat-file -t "+object, shell=True, stdout=subprocess.PIPE)
+        t = p.communicate()[0].decode('utf-8').strip()
         self._info = {
-            'type' : 'BLOB',
-            'name' : self.filepath,
+            'type' : t,
+            'name' : object,
             'data' : data,
             'mtime' : fileinfo.st_mtime
         }
@@ -44,15 +47,13 @@ class BlobData(Data):
     def symbol(self):
         return "@"
     def __str__(self):
-        import re
-        p = re.compile('^(^.+?)\s(\d+)\x00(.+)')
-        m = p.match(self._info['data'])
-        subtype = '\t'
-        try:
-            subtype = m.group(1)
-        except AttributeError:
-            pass
-        return self.symbol()+self._info['type']+':'+subtype+'\t'+self._info['name']
+        content = self._info['data']
+        if self._info['type'] == 'blob':
+            content = content[:100]
+        str = '________________________________________________\n'
+        str += self.symbol()+self._info['type']+'\t'+self._info['name']+'\n'+content+'\n'
+        # str += '________________________________________________\n'
+        return str
 
 class RefData(Data):
     def parse(self):
@@ -68,16 +69,24 @@ class RefData(Data):
         return self._info
     def symbol(self):
         return "#"
+    def __str__(self):
+        str = '________________________________________________\n'
+        str += self.symbol()+self._info['type']+'\t'+self._info['name']+'\n'+self._info['data']+'\n'
+        # str += '________________________________________________\n'
+        return str
 
 dlist = []
-
 path = '.'
 p_objects = path+'/.git/objects'
+i = 0
 for p in os.listdir(p_objects):
+    if i > 30:
+        break
     if p in ['info', 'pack']:
         continue
     for p2 in os.listdir(p_objects+'/'+p):
-        dlist.append(BlobData(p_objects+'/'+p+'/'+p2))
+        dlist.append(ObjectData(p_objects+'/'+p+'/'+p2))
+    i += 1
 
 p_refs = path+'/.git/refs'
 for p in os.listdir(p_refs):
@@ -92,5 +101,11 @@ def call_sort(x):
     return info['mtime']
 dlist.sort(key=call_sort, reverse=True)
 
-for o in dlist:
-    print(o)
+i = 0
+while i < min(len(dlist), LIST_SIZE):
+    print(dlist[i])
+    i += 1
+
+print('\u001b[1;31mColor Text\u001b[0m')
+print('\u001b[1;31mColor Text\u001b[0m')
+
