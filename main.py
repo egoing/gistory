@@ -52,6 +52,7 @@ class ObjectData(Data):
 
 class RefData(Data):
     def parse(self):
+        print(self.filepath)
         content = open(self.filepath, 'rb').read()
         self._info = {
             'type' : 'REFE',
@@ -102,7 +103,7 @@ for (_path, _dir, _files) in os.walk(path):
 import operator
 fileList.sort(key=operator.itemgetter(1), reverse=True)
 for _file in fileList:
-    if _file[2] in ['commit', 'blob', 'tree']:
+    if _file[2] in ['object']:
         print(ObjectData(_file[0]))
     elif _file[2] == 'index':
         print(IndexData(_file[0]))
