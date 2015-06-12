@@ -101,7 +101,7 @@ for (_path, _dir, _files) in os.walk(path):
             _type = 'index'
         fileList.append([fpath, os.stat(fpath).st_mtime, _type])
 import operator
-fileList.sort(key=operator.itemgetter(1), reverse=True)
+fileList.sort(key=operator.itemgetter(1))
 for _file in fileList:
     if _file[2] in ['object']:
         print(ObjectData(_file[0]))
