@@ -7,6 +7,7 @@ from abc import ABCMeta, abstractmethod
 LIST_SIZE = 30
 
 #path = sys.argv[1]
+path = '.git'
 
 class Data(metaclass=ABCMeta):
     filepath = None
@@ -22,13 +23,9 @@ class Data(metaclass=ABCMeta):
     @abstractmethod
     def info(self):
         pass
-    @abstractmethod
-    def symbol(self):
-        pass
 
 class ObjectData(Data):
     def parse(self):
-        fileinfo = os.stat(self.filepath);
         _fileinfo = os.path.split(self.filepath)
         object = _fileinfo[0][-2:] + _fileinfo[1]
         import subprocess
@@ -39,73 +36,80 @@ class ObjectData(Data):
         self._info = {
             'type' : t,
             'name' : object,
-            'data' : data,
-            'mtime' : fileinfo.st_mtime
+            'data' : data
         }
     def info(self):
         return self._info
-    def symbol(self):
-        return "@"
     def __str__(self):
         content = self._info['data']
         if self._info['type'] == 'blob':
             content = content[:100]
         str = '________________________________________________\n'
-        str += self.symbol()+self._info['type']+'\t'+self._info['name']+'\n'+content+'\n'
+        str += self._info['type']+'\t'+self._info['name']+'\n'+content
         # str += '________________________________________________\n'
         return str
 
 class RefData(Data):
     def parse(self):
-        fileinfo = os.stat(self.filepath);
         content = open(self.filepath, 'rb').read()
         self._info = {
             'type' : 'REFE',
             'name' : self.filepath,
-            'data' : content.decode('utf-8'),
-            'mtime' : fileinfo.st_mtime
+            'data' : content.decode('utf-8')
         }
     def info(self):
         return self._info
-    def symbol(self):
-        return "#"
     def __str__(self):
         str = '________________________________________________\n'
-        str += self.symbol()+self._info['type']+'\t'+self._info['name']+'\n'+self._info['data']+'\n'
+        str += self._info['type']+'\t'+self._info['name']+'\n'+self._info['data']
         # str += '________________________________________________\n'
         return str
 
-dlist = []
-path = '.'
-p_objects = path+'/.git/objects'
-i = 0
-for p in os.listdir(p_objects):
-    if i > 30:
-        break
-    if p in ['info', 'pack']:
-        continue
-    for p2 in os.listdir(p_objects+'/'+p):
-        dlist.append(ObjectData(p_objects+'/'+p+'/'+p2))
-    i += 1
+class IndexData(Data):
+    def parse(self):
+        import subprocess
+        p = subprocess.Popen("git ls-files --stage", shell=True, stdout=subprocess.PIPE)
+        data = p.communicate()[0].decode('utf-8').strip()
+        self._info = {
+            'type' : 'index',
+            'name' : 'index',
+            'data' : data
+        }
+    def info(self):
+        return self._info
+    def __str__(self):
+        str = '________________________________________________\n'
+        str += self._info['type']+'\t'+self._info['name']+'\n'+self._info['data']
+        # str += '________________________________________________\n'
+        return str
 
-p_refs = path+'/.git/refs'
-for p in os.listdir(p_refs):
-    for p2 in os.listdir(p_refs+'/'+p):
-        dlist.append(RefData(p_refs+'/'+p+'/'+p2))
-
-dlist.append(RefData('.git/HEAD'))
-
-
-def call_sort(x):
-    info = x.info()
-    return info['mtime']
-dlist.sort(key=call_sort, reverse=True)
-
-i = 0
-while i < min(len(dlist), LIST_SIZE):
-    print(dlist[i])
-    i += 1
-
-print('\u001b[1;31mColor Text\u001b[0m')
-print('\u001b[1;31mColor Text\u001b[0m')
-
+fileList = []
+_count = 0
+_break = False
+for (_path, _dir, _files) in os.walk(path):
+    _path = _path.replace('\\', '/')
+    for _file in _files:
+        fpath = os.path.join(_path+'/'+_file)
+        _type = None
+        if '.git/hooks' in fpath:
+            break;
+        if '.git/objects' in fpath:
+            _type = 'object'
+        elif '.git/index' in fpath:
+            _type = 'index'
+        fileList.append([fpath, os.stat(fpath).st_mtime, _type])
+        _count += 1
+        if _count >= 10 :
+            _break = True
+            break;
+    if _break:
+        break;
+import operator
+fileList.sort(key=operator.itemgetter(1), reverse=True)
+for _file in fileList:
+    if _file[2] == 'object':
+        print(ObjectData(_file[0]))
+    elif _file[2] == 'index':
+        print(IndexData(_file[0]))
+    else:
+        print(RefData(_file[0]))
