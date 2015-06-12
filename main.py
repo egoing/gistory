@@ -20,9 +20,12 @@ class Data(metaclass=ABCMeta):
     @abstractmethod
     def parse(self):
         pass
-    @abstractmethod
     def info(self):
-        pass
+        return self._info
+    def __str__(self):
+        str = ('-'*100)+'\n'
+        str += self._info['type']+'\t'+self._info['name']+'\n'+self._info['data']+'\n\n'
+        return str
 
 class ObjectData(Data):
     def parse(self):
@@ -38,14 +41,12 @@ class ObjectData(Data):
             'name' : object,
             'data' : data
         }
-    def info(self):
-        return self._info
     def __str__(self):
         content = self._info['data']
         if self._info['type'] == 'blob':
             content = content[:100]
         str = '________________________________________________\n'
-        str += self._info['type']+'\t'+self._info['name']+'\n'+content
+        str += self._info['type']+'\t'+self._info['name']+'\n'+content+"\n\n"
         # str += '________________________________________________\n'
         return str
 
@@ -57,13 +58,6 @@ class RefData(Data):
             'name' : self.filepath,
             'data' : content.decode('utf-8')
         }
-    def info(self):
-        return self._info
-    def __str__(self):
-        str = '________________________________________________\n'
-        str += self._info['type']+'\t'+self._info['name']+'\n'+self._info['data']
-        # str += '________________________________________________\n'
-        return str
 
 class IndexData(Data):
     def parse(self):
@@ -75,17 +69,20 @@ class IndexData(Data):
             'name' : 'index',
             'data' : data
         }
-    def info(self):
-        return self._info
-    def __str__(self):
-        str = '________________________________________________\n'
-        str += self._info['type']+'\t'+self._info['name']+'\n'+self._info['data']
-        # str += '________________________________________________\n'
-        return str
+
+
+class PackData(Data):
+    def parse(self):
+        import subprocess
+        p = subprocess.Popen("git verify-pack -v "+self.filepath, shell=True, stdout=subprocess.PIPE)
+        data = p.communicate()[0].decode('utf-8').strip()
+        self._info = {
+            'type' : 'pack',
+            'name' : self.filepath,
+            'data' : data
+        }
 
 fileList = []
-_count = 0
-_break = False
 for (_path, _dir, _files) in os.walk(path):
     _path = _path.replace('\\', '/')
     for _file in _files:
@@ -93,23 +90,23 @@ for (_path, _dir, _files) in os.walk(path):
         _type = None
         if '.git/hooks' in fpath:
             break;
-        if '.git/objects' in fpath:
+        if '.git/objects/pack' in fpath:
+            if '.pack' in fpath:
+                continue;
+            _type = 'pack'
+        elif '.git/objects' in fpath:
             _type = 'object'
         elif '.git/index' in fpath:
             _type = 'index'
         fileList.append([fpath, os.stat(fpath).st_mtime, _type])
-        _count += 1
-        if _count >= 10 :
-            _break = True
-            break;
-    if _break:
-        break;
 import operator
 fileList.sort(key=operator.itemgetter(1), reverse=True)
 for _file in fileList:
-    if _file[2] == 'object':
+    if _file[2] in ['commit', 'blob', 'tree']:
         print(ObjectData(_file[0]))
     elif _file[2] == 'index':
         print(IndexData(_file[0]))
+    elif _file[2] == 'pack':
+        print(PackData(_file[0]))
     else:
         print(RefData(_file[0]))
