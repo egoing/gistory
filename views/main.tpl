@@ -34,42 +34,6 @@
             </div>
         </div>
         <div class="col-md-9 viewer">
-            <div class="panel panel-default">
-              <!-- Default panel contents -->
-              <div class="panel-heading">View 1</div>
-                <table id="viewer_table" class="table">
-                    <tr>
-                        <td style="width:60px">type</td>
-                        <td class="type"></td>
-                    </tr>
-                    <tr>
-                        <td>name</td>
-                        <td class="name"></td>
-                    </tr>
-                    <tr>
-                        <td>data</td>
-                        <td class="data"></td>
-                    </tr>
-                </table>
-            </div>
-            <div class="panel panel-default">
-              <!-- Default panel contents -->
-              <div class="panel-heading">View 2</div>
-                <table id="viewer_table2" class="table">
-                    <tr>
-                        <td style="width:60px">type</td>
-                        <td class="type"></td>
-                    </tr>
-                    <tr>
-                        <td>name</td>
-                        <td class="name"></td>
-                    </tr>
-                    <tr>
-                        <td>data</td>
-                        <td class="data"></td>
-                    </tr>
-                </table>
-            </div>
         </div>
       </div>
     </div>
