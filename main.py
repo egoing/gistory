@@ -1,17 +1,8 @@
-import codecs
-from git_object import *
-
 __author__ = 'egoing'
+from git_object import *
 import sys, os
-
-LIST_SIZE = 30
-
 #path = sys.argv[1]
 path = '.git'
-
-
-
-
 fileList = []
 for (_path, _dir, _files) in os.walk(path):
     _path = _path.replace('\\', '/')

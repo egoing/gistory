@@ -31,7 +31,8 @@ class ObjectData(Data):
         self._info = {
             'type' : t,
             'name' : object,
-            'data' : data
+            'data' : data,
+            'path' : self.filepath
         }
     def __str__(self):
         content = self._info['data']
@@ -49,7 +50,8 @@ class RefData(Data):
         self._info = {
             'type' : 'REFE',
             'name' : self.filepath,
-            'data' : content.decode('utf-8')
+            'data' : content.decode('utf-8'),
+            'path' : self.filepath
         }
 
 class IndexData(Data):
@@ -60,9 +62,9 @@ class IndexData(Data):
         self._info = {
             'type' : 'index',
             'name' : 'index',
-            'data' : data
+            'data' : data,
+            'path' : self.filepath
         }
-
 
 class PackData(Data):
     def parse(self):
@@ -72,5 +74,18 @@ class PackData(Data):
         self._info = {
             'type' : 'pack',
             'name' : self.filepath,
-            'data' : data
+            'data' : data,
+            'path' : self.filepath
         }
+
+class Factory:
+    @staticmethod
+    def getElement(path):
+        if '.git/hooks' in path:
+            return RefData(path)
+        if '.git/objects/pack' in path:
+            return PackData(path)
+        elif '.git/objects' in path:
+            return ObjectData(path)
+        elif '.git/index' in path:
+            return IndexData(path)
