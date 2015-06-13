@@ -1,0 +1,6 @@
+body{
+    font-size:1.2em;
+}
+.element-list li{
+    word-wrap:break-word;
+}

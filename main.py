@@ -30,4 +30,4 @@ for _file in fileList:
     elif _file[2] == 'pack':
         print(PackData(_file[0]))
     else:
-        print(RefData(_file[0]))
+        print(TextData(_file[0]))

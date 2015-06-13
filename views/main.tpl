@@ -16,12 +16,13 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+      <link rel="stylesheet" href="/static/style.css"/>
   </head>
   <body>
     <div class="container-fluid">
       <div class="page-header"><h1>Git Changed History</h1></div>
       <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-3 element-list">
             <div class="list-group">
                 % for item in elements:
                     <li
@@ -35,8 +36,26 @@
         <div class="col-md-9 viewer">
             <div class="panel panel-default">
               <!-- Default panel contents -->
-              <div class="panel-heading">Panel heading</div>
+              <div class="panel-heading">View 1</div>
                 <table id="viewer_table" class="table">
+                    <tr>
+                        <td style="width:60px">type</td>
+                        <td class="type"></td>
+                    </tr>
+                    <tr>
+                        <td>name</td>
+                        <td class="name"></td>
+                    </tr>
+                    <tr>
+                        <td>data</td>
+                        <td class="data"></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="panel panel-default">
+              <!-- Default panel contents -->
+              <div class="panel-heading">View 2</div>
+                <table id="viewer_table2" class="table">
                     <tr>
                         <td style="width:60px">type</td>
                         <td class="type"></td>
