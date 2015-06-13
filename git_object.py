@@ -81,10 +81,14 @@ class PackData(Data):
 class Factory:
     @staticmethod
     def getElement(path):
+        if not os.path.isfile(path):
+            return None
         if '.git/hooks' in path:
-            return RefData(path)
+            return None
         if '.git/objects/pack' in path:
             return PackData(path)
+        if '.git/objects/info' in path:
+            return RefData(path)
         elif '.git/objects' in path:
             return ObjectData(path)
         elif '.git/index' in path:

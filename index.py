@@ -9,20 +9,9 @@ def _git_viewer():
     for (_path, _dir, _files) in os.walk(path):
         _path = _path.replace('\\', '/')
         for _file in _files:
-            fpath = os.path.join(_path+'/'+_file)
-            _type = None
-            if '.git/hooks' in fpath:
-                break;
-            if '.git/objects/pack' in fpath:
-                if '.pack' in fpath:
-                    continue;
-                _type = 'pack'
-            elif '.git/objects' in fpath:
-                _type = 'object'
-            elif '.git/index' in fpath:
-                _type = 'index'
-            fileList.append([fpath, os.stat(fpath).st_mtime, _type])
-    fileList.sort(key=operator.itemgetter(1))
+            fpath = os.path.join(_path,_file)
+            fileList.append(fpath)
+    fileList.sort(key=operator.itemgetter(1), reverse=True)
     return fileList
 
 @route('/hello')
@@ -30,7 +19,7 @@ def _git_viewer():
 def hello():
     elements = []
     for _file in _git_viewer():
-        e = Factory.getElement(_file[0])
+        e = Factory.getElement(_file)
         if e != None:
             elements.append(e)
     return template('main', elements=elements)
