@@ -25,15 +25,15 @@
         <div class="col-md-3 element-list">
             <div class="list-group">
                 % for item in elements:
-                    <li
-                            class="list-group-item element"
+                    <a href="#viewer"
+                                class="list-group-item element"
                             data-path="{{item[0]}}">
                                 {{item[0].lstrip('.git/,.git\\')}}, <span class="time">{{item[1]}}</span>
-                    </li>
+                    </a>
                 % end
             </div>
         </div>
-        <div class="col-md-9 viewer">
+        <div class="col-md-9 viewer" id="viewer">
         </div>
       </div>
     </div>
