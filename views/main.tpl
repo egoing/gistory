@@ -27,8 +27,8 @@
                 % for item in elements:
                     <li
                             class="list-group-item element"
-                            data-path="{{item.info()['path']}}">
-                                {{item.info()['path']}}
+                            data-path="{{item[0]}}">
+                                {{item[0].lstrip('.git/,.git\\')}}, <span class="time">{{item[1]}}</span>
                     </li>
                 % end
             </div>

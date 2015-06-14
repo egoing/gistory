@@ -16,18 +16,19 @@ $('.element').on('click', function(){
   })
 })
 
-$(document).on('click', '.sha1', function(){
-  var _object = $(this).text();
-  var _parent = $(this).parents('.panel');
-  $.ajax({
-    url:'/ajax/object',
-    method:'POST',
-    success:function(result){
-        _parent.nextAll().remove()
-        panelManager.add(_parent.data('panel_id'), result.type, result.name, result.data)
-    },
-    data:{object:_object}
-  })
+$(document).on('click', '.sha1', function(e){
+      e.preventDefault();
+      var _object = $(this).text();
+      var _parent = $(this).parents('.panel');
+      $.ajax({
+        url:'/ajax/object',
+        method:'POST',
+        success:function(result){
+            _parent.nextAll().remove()
+            panelManager.add(_parent.data('panel_id'), result.type, result.name, result.data)
+        },
+        data:{object:_object}
+      })
 })
 function Panel(){
     this.panel_id = 0;
@@ -43,11 +44,6 @@ Panel.prototype.template = function(id, type, name, data){
               <div class="panel-heading">['+type+'] '+name+'</div>\
                 <table id="viewer_table2" class="table">\
                     <tr>\
-                        <td style="width:60px">type</td>\
-                        <td class="type">'+type+'</td>\
-                    </tr>\
-                    <tr>\
-                        <td>data</td>\
                         <td class="data">'+data+'</td>\
                     </tr>\
                 </table>\

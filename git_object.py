@@ -47,6 +47,7 @@ class ObjectData(Data):
         # str += '________________________________________________\n'
         return str
 
+
 class ObjectDataById(ObjectData):
     def __init__(self, object_id):
         self.object = object_id
@@ -89,7 +90,8 @@ class IndexData(Data):
             'type' : 'index',
             'name' : 'index',
             'data' : data,
-            'path' : self.filepath
+            'path' : self.filepath,
+            'mtime' : os.path.getmtime(self.filepath)
         }
 
 class PackData(Data):
@@ -120,6 +122,7 @@ class UnknonData(Data):
 class GitDataObjectFactory:
     @staticmethod
     def getElement(path):
+        path = path.replace('\\', '/')
         if not os.path.isfile(path):
             return None
         if '.git/objects/pack' in path:
@@ -136,10 +139,11 @@ class GitElement:
     path = None
     def __init__(self, path):
         self.path = path
-    def getFileRecursivly(self, _reverse=True):
+    @staticmethod
+    def getFileRecursivly(path, _reverse=True):
         import sys, os, operator
         fileList = []
-        for (_path, _dir, _files) in os.walk(self.path):
+        for (_path, _dir, _files) in os.walk(path):
             _path = _path.replace('\\', '/')
             for _file in _files:
                 fpath = os.path.join(_path,_file)
@@ -149,6 +153,6 @@ class GitElement:
         return fileList
     def getAll(self):
         elist = []
-        for item in self.getFileRecursivly():
+        for item in GitElement.getFileRecursivly('.git'):
             elist.append(GitDataObjectFactory.getElement(item[0]))
         return elist;
