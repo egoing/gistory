@@ -1,6 +1,7 @@
 
 
-$('.element').on('click', function(){
+$('.element').on('click', function(e){
+  e.preventDefault();
   $.ajax({
     url:'/ajax/element',
     method:'POST',
