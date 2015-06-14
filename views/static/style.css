@@ -12,6 +12,10 @@ body{
     font-size:0.8em
 }
 
+.path{
+    word-wrap:break-word;
+}
+
 .sha1{
     text-decoration:underline;
 }

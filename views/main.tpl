@@ -28,7 +28,7 @@
                     <a href="#viewer"
                                 class="list-group-item element"
                             data-path="{{item[0]}}">
-                                {{item[0].lstrip('.git/,.git\\')}}, <span class="time">{{item[1]}}</span>
+                                <span class="path">{{item[0].lstrip('.git/,.git\\')}}<span></span> <span class="time">{{item[1]}}</span>
                     </a>
                 % end
             </div>
