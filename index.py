@@ -1,5 +1,11 @@
 from bottle import route, run, template, post, get, request
 from git_object import *
+import sys
+
+if len(sys.argv)>1:
+    path = sys.argv[1]
+else:
+    path = './'
 
 def pretty_date(time=False):
     """
@@ -44,11 +50,10 @@ def pretty_date(time=False):
         return str(int(day_diff / 30)) + " months ago"
     return str(int(day_diff / 365)) + " years ago"
 
-@route('/hello')
-@route('/hello/<name>')
+@route('/')
 def hello():
     _files = []
-    for file in GitElement.getFileRecursivly('.git'):
+    for file in GitElement.getFileRecursivly(path+'.git'):
         _files.append([file[0], pretty_date(int(file[1]))])
     return template('main', elements=_files)
 
