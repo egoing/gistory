@@ -28,7 +28,7 @@
                     <a href="#viewer"
                                 class="list-group-item element"
                             data-path="{{item[0]}}">
-                                <span class="path">{{item[0]}}<span></span> <span class="time">{{item[1]}}</span>
+                                <span class="path">{{item[0][item[0].find('.git')+5:]}}<span></span> <span class="time">{{item[1]}}</span>
                     </a>
                 % end
             </div>
@@ -42,5 +42,6 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script src="/static/script.js"></script>
+
   </body>
 </html>

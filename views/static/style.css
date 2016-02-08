@@ -4,6 +4,9 @@ body{
 .element-list li{
     word-wrap:break-word;
 }
+.list-group a {
+  mix-blend-mode: multiply;
+}
 
 .time{
     display:block;
