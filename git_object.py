@@ -23,11 +23,12 @@ class ObjectData(Data):
     def parse(self):
         _fileinfo = os.path.split(self.filepath)
         object = _fileinfo[0][-2:] + _fileinfo[1]
+        path = self.filepath[:-55]
         try:
             import subprocess
-            p = subprocess.Popen("git cat-file -p "+object, shell=True, stdout=subprocess.PIPE)
+            p = subprocess.Popen("cd "+path+";git cat-file -p "+object, shell=True, stdout=subprocess.PIPE)
             data = p.communicate()[0].decode('utf-8').strip()
-            p = subprocess.Popen("git cat-file -t "+object, shell=True, stdout=subprocess.PIPE)
+            p = subprocess.Popen("cd "+path+";git cat-file -t "+object, shell=True, stdout=subprocess.PIPE)
             t = p.communicate()[0].decode('utf-8').strip()
         except UnicodeDecodeError as e:
             data = "Can't parsing"
@@ -84,7 +85,7 @@ class TextData(Data):
 class IndexData(Data):
     def parse(self):
         import subprocess
-        p = subprocess.Popen("git ls-files --stage", shell=True, stdout=subprocess.PIPE)
+        p = subprocess.Popen("cd "+self.filepath.replace('/index','')+";git ls-files --stage", shell=True, stdout=subprocess.PIPE)
         data = p.communicate()[0].decode('utf-8').strip()
         self._info = {
             'type' : 'index',
