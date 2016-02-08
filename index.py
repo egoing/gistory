@@ -70,8 +70,8 @@ def ajax_element():
 
 @route('/ajax/object', method='POST')
 def ajax_object():
-    path = request.forms.get('object')
-    info = ObjectDataById(path).info()
+    obj = request.forms.get('object')
+    info = ObjectDataById(obj, path).info()
     return info
 
 
