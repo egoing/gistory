@@ -67,7 +67,10 @@ Panel.nl2br = function(str, is_xhtml) {
     .replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
 }
 Panel.prototype.template = function(id, type, name, data, path){
-    var color = hashStringToColor(path);
+    if(path)
+      var color = hashStringToColor(path);
+    else
+      var color = 'gray';
     var tag = $('<div class="panel panel-default" data-panel_id="'+id+'" style="border-left:solid 2px '+color+'">\
               <div class="panel-heading">['+type+'] '+name+'</div>\
                 <table id="viewer_table2" class="table">\
