@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from bottle import route, run, template, post, get, request
 from git_object import *
 import sys
@@ -73,7 +74,5 @@ def ajax_object():
     obj = request.forms.get('object')
     info = ObjectDataById(obj, path).info()
     return info
-
-
 
 run(host='localhost', port=8080, debug=True)
