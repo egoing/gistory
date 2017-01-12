@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 from bottle import route, run, template, post, get, request
 from git_object import *
-import sys
+import sys, argparse
 
-if len(sys.argv)>1:
-    path = sys.argv[1]
-else:
-    path = './'
+parser = argparse.ArgumentParser()
+parser.add_argument("path", help="Path of .git directory.", nargs='?')
+parser.add_argument("-p", "--port", help="Web server port", type=int)
+args = parser.parse_args()
+path = args.path if args.path else './'
 
 def pretty_date(time=False):
     """
@@ -18,7 +19,7 @@ def pretty_date(time=False):
     now = datetime.now()
     if type(time) is int:
         diff = now - datetime.fromtimestamp(time)
-    elif isinstance(time,datetime):
+    elif isinstance(time, datetime):
         diff = now - time
     elif not time:
         diff = now - now
@@ -51,17 +52,22 @@ def pretty_date(time=False):
         return str(int(day_diff / 30)) + " months ago"
     return str(int(day_diff / 365)) + " years ago"
 
+
 @route('/')
 def hello():
     _files = []
-    for file in GitElement.getFileRecursivly(path+'.git'):
+    for file in GitElement.getFileRecursivly(path + '.git'):
         _files.append([file[0], pretty_date(int(file[1]))])
     return template('main', elements=_files)
 
+
 from bottle import static_file
+
+
 @route('/static/<filename>')
 def server_static(filename):
     return static_file(filename, root='./views/static')
+
 
 @route('/ajax/element', method='POST')
 def ajax_element():
@@ -69,10 +75,13 @@ def ajax_element():
     info = GitDataObjectFactory.getElement(path).info()
     return info
 
+
 @route('/ajax/object', method='POST')
 def ajax_object():
     obj = request.forms.get('object')
     info = ObjectDataById(obj, path).info()
     return info
 
-run(host='localhost', port=8080, debug=True)
+
+_port = args.port if args.port else 8805
+run(host='localhost', port=_port, debug=True)
