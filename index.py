@@ -1,13 +1,20 @@
 #!/usr/bin/env python3
+import argparse
+import os
+import sys
+
+import bottle
 from bottle import route, run, template, post, get, request
 from git_object import *
-import sys, argparse
+
+packagePath = os.path.dirname(bottle.__file__)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("path", help="Path of .git directory.", nargs='?')
 parser.add_argument("-p", "--port", help="Web server port", type=int)
 args = parser.parse_args()
 path = args.path if args.path else './'
+
 
 def pretty_date(time=False):
     """
@@ -58,7 +65,8 @@ def hello():
     _files = []
     for file in GitElement.getFileRecursivly(path + '.git'):
         _files.append([file[0], pretty_date(int(file[1]))])
-    return template('main', elements=_files)
+    print('absolute : ' + os.path.abspath('./views/main'));
+    return template(packagePath + "/views/main.tpl", elements=_files)
 
 
 from bottle import static_file
@@ -66,7 +74,7 @@ from bottle import static_file
 
 @route('/static/<filename>')
 def server_static(filename):
-    return static_file(filename, root='./views/static')
+    return static_file(filename, root=packagePath + '/views/static')
 
 
 @route('/ajax/element', method='POST')
@@ -83,5 +91,10 @@ def ajax_object():
     return info
 
 
-_port = args.port if args.port else 8805
-run(host='localhost', port=_port, debug=True)
+def main():
+    _port = args.port if args.port else 8805
+    run(host='localhost', port=_port, debug=True)
+
+
+if __name__ == "__main__":
+    main()
