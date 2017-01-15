@@ -21,7 +21,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.14',
+    version='0.25',
 
     description='Tracking your .git changed history',
     long_description=long_description,
@@ -88,7 +88,9 @@ setup(
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
-    package_data={},
+    package_data={
+        'gistory' : ['views/main.tpl', 'views/static/*']
+    },
 
     # Although 'package_data' is the preferred approach, in some case you may
     # need to place data files outside of your packages. See:
@@ -101,7 +103,7 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
         'console_scripts': [
-            'gistory=index:main',
+            'gistory=gistory.index:main',
         ],
     },
 )
