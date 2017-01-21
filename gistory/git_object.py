@@ -1,7 +1,8 @@
 from abc import ABCMeta, abstractmethod
+from six import with_metaclass
 import sys, os
 
-class Data(metaclass=ABCMeta):
+class Data(with_metaclass(ABCMeta)):
     filepath = None
     _info = None
     def __init__(self, filepath):
