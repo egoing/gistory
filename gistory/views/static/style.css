@@ -1,5 +1,15 @@
 body{
     font-size:1.2em;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+.page-header{
+    margin:0 !important;
+    padding-left:8px;
+    border-bottom: none;
+}
+h1{
+    font-size:4rem;
+    font-weight: 100;
 }
 .element-list li{
     word-wrap:break-word;
@@ -21,4 +31,14 @@ body{
 
 .sha1{
     text-decoration:underline;
+}
+
+
+.list-group-item {
+    border-radius: 0 !important;
+    padding:15px;
+}
+
+.panel{
+    border-radius: 0 !important;
 }
