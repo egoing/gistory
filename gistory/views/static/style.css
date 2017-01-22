@@ -1,6 +1,7 @@
 body{
-    font-size:1.2em;
     font-family: 'Source Sans Pro', sans-serif;
+    padding:2rem;
+    padding-top:0;
 }
 .page-header{
     margin:0 !important;
@@ -8,8 +9,8 @@ body{
     border-bottom: none;
 }
 h1{
-    font-size:4rem;
-    font-weight: 100;
+    font-size:3rem;
+    font-weight: 200;
 }
 .element-list li{
     word-wrap:break-word;
@@ -41,4 +42,15 @@ h1{
 
 .panel{
     border-radius: 0 !important;
+}
+.data{
+    padding:3px !important;
+}
+.data pre{
+    border:none;
+    -webkit-border-radius:0;
+    -moz-border-radius:0;
+    border-radius:0;
+    margin:0;
+    background-color: rgba(245, 245, 245, 0.55);
 }
