@@ -143,15 +143,24 @@ class GitElement:
     def __init__(self, path):
         self.path = path
     @staticmethod
-    def getFileRecursivly(path, _reverse=True):
+    def getFileRecursivly(path, limit, _reverse=True):
+        print(limit)
         import sys, os, operator
         fileList = []
+        count = 0
+        end = False
         for (_path, _dir, _files) in os.walk(path):
             _path = _path.replace('\\', '/')
             for _file in _files:
                 fpath = os.path.join(_path,_file)
                 mtime = os.path.getmtime(fpath);
                 fileList.append([fpath, mtime])
+                count = count+1
+                if(count>=limit):
+                    end = True
+                    break
+            if(end):
+                break
         fileList.sort(key=operator.itemgetter(1), reverse=_reverse)
         return fileList
     def getAll(self):

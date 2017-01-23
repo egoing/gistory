@@ -11,10 +11,10 @@ packagePath = os.path.dirname(bottle.__file__)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("path", help="Path of .git directory.", nargs='?')
-parser.add_argument("-p", "--port", help="Web server port", type=int)
+parser.add_argument("-p", "--port", help="web server port", type=int)
+parser.add_argument("-l", "--limit", help="limit the number of object", type=int, default=500)
 args = parser.parse_args()
 path = args.path if args.path else './'
-
 
 def pretty_date(time=False):
     """
@@ -63,7 +63,7 @@ def pretty_date(time=False):
 @route('/')
 def hello():
     _files = []
-    for file in GitElement.getFileRecursivly(path + '.git'):
+    for file in GitElement.getFileRecursivly(path + '.git', args.limit):
         _files.append([file[0], pretty_date(int(file[1]))])
     return template(os.path.join(packagePath,'views','main.tpl'), elements=_files)
 

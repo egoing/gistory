@@ -77,7 +77,7 @@ Panel.prototype.template = function (id, type, name, data, path) {
               <div class="panel-heading">[' + type + '] ' + name + '</div>\
                 <table id="viewer_table2" class="table">\
                     <tr>\
-                        <td class="data"><pre class="prettyprint">' + data + '</pre></td>\
+                        <td class="data"><pre><code>' + data + '</code></pre></td>\
                     </tr>\
                 </table>\
             </div>')
@@ -86,7 +86,7 @@ Panel.prototype.template = function (id, type, name, data, path) {
 Panel.prototype.add = function (caller_panel_id, type, name, data, path) {
     reg = /\b([a-f0-9]{40})\b/g;
     data = escapeHtml(data);
-    data = Panel.nl2br(data.replace(reg, '<a href="#" class="sha1">$1</a>'));
+    data = data.replace(reg, '<a href="#" class="sha1">$1</a>');
     var new_panel = this.template(caller_panel_id + 1, type, name, data, path);
     this.panels.push(new_panel);
     $('.viewer').append(new_panel)
