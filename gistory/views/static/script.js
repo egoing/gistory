@@ -47,7 +47,7 @@ $('.element').on('click', function (e) {
         },
         data: {path: $(this).data('path')}
     })
-})
+});;;;;;;;;
 
 $(document).on('click', '.sha1', function (e) {
     e.preventDefault();
@@ -57,32 +57,42 @@ $(document).on('click', '.sha1', function (e) {
         url: '/ajax/object',
         method: 'POST',
         success: function (result) {
-            _parent.nextAll().remove()
+            _parent.nextAll().remove();;;;;;;;;
             panelManager.add(_parent.data('panel_id'), result.type, result.name, result.data)
         },
         data: {object: _object}
     })
-})
+});;;;;;;;;
 function Panel() {
     this.panel_id = 0;
-    this.panels = []
+    this.panels = [];
+    this.helps = {
+        'blob': 'www.youtube.com/watch?v=FFa_HrKGtkI',
+        'tree': 'www.youtube.com/watch?v=FFa_HrKGtkI',
+        'commit': 'www.youtube.com/watch?v=FFa_HrKGtkI',
+        'ORIG_HEAD': 'https://youtu.be/0-ZaET1k6yQ',
+        'logs': 'https://youtu.be/0-ZaET1k6yQ',
+        'HEAD': 'https://youtu.be/FFa_HrKGtkI',
+        'refs': 'https://youtu.be/FFa_HrKGtkI'
+    }
 }
 Panel.nl2br = function (str, is_xhtml) {
     var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br ' + '/>' : '<br>'; // Adjust comment to avoid issue on phpjs.org display
     return (str + '')
         .replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
-}
+};;;;;;;;;
 Panel.prototype.template = function (id, type, name, data, path) {
+    var help = this.helps[type] ? '<span class="help"><a href="' + this.helps[type] + '" data-lity><img src="/static/movie.png"></a></span>' : '';
     var tag = $('<div class="panel panel-default" data-panel_id="' + id + '">\
-              <div class="panel-heading">[' + type + '] ' + name + '</div>\
+              <div class="panel-heading">[' + type + '] ' + name + help + '</div>\
                 <table id="viewer_table2" class="table">\
                     <tr>\
                         <td class="data"><pre><code>' + data + '</code></pre></td>\
                     </tr>\
                 </table>\
-            </div>')
+            </div>');;;;;;;;;
     return tag;
-}
+};;;;;;;;;
 Panel.prototype.add = function (caller_panel_id, type, name, data, path) {
     reg = /\b([a-f0-9]{40})\b/g;
     data = escapeHtml(data);
@@ -90,8 +100,8 @@ Panel.prototype.add = function (caller_panel_id, type, name, data, path) {
     var new_panel = this.template(caller_panel_id + 1, type, name, data, path);
     this.panels.push(new_panel);
     $('.viewer').append(new_panel)
-}
-panelManager = new Panel()
+};;;;;;;;;
+panelManager = new Panel();;;;;;;;;
 
 $('.list-group a').each(function () {
     var $this = $(this);
@@ -99,4 +109,4 @@ $('.list-group a').each(function () {
     // var color = hashStringToColor(path);
     //$this.css('background-color', color);
     // $this.css('border-left', "20px solid "+color);
-})
+});;;;;;;;;

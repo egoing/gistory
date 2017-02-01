@@ -17,7 +17,8 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400" rel="stylesheet">
-      <link rel="stylesheet" href="/static/style.css"/>
+    <link rel="stylesheet" href="/static/style.css"/>
+    <link rel="stylesheet" href="/static/lity.min.css"/>
   </head>
   <body>
     <div class="container-fluid">
@@ -43,5 +44,6 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script src="/static/script.js"></script>
+    <script src="/static/lity.min.js"></script
   </body>
 </html>
