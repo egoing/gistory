@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 import argparse
-import os
-import sys
 
 from gistory import bottle
-from gistory.bottle import route, run, template, post, get, request
+from gistory.bottle import route, run, template, request
 from gistory.git_object import *
 
 packagePath = os.path.dirname(bottle.__file__)
@@ -92,7 +90,7 @@ def ajax_object():
 
 def main():
     _port = args.port if args.port else 8805
-    run(host='0.0.0.0', port=_port, debug=True)
+    run(host='0.0.0.0', port=_port, debug=False)
 
 
 if __name__ == "__main__":
