@@ -65,3 +65,9 @@ h1{
 .help img {
     width: 20px;
 }
+
+a.active {
+    background-color: black !important;
+    color: white !important;
+    border: 1px solid black !important;
+}
