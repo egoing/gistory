@@ -69,7 +69,7 @@ def hello():
 from gistory.bottle import static_file
 
 
-@route('/static/<filename>')
+@route('/static/<filename:path>')
 def server_static(filename):
     return static_file(filename, root=os.path.join(packagePath,'views','static'))
 
