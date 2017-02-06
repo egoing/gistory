@@ -89,13 +89,17 @@ Panel.nl2br = function (str, is_xhtml) {
     return (str + '')
         .replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
 };
+Panel.prototype.getViewerOptimizedMaxHeight = function () {
+    var MARGIN = 130;
+    return $(window).height() - $('.element-list').offset().top - MARGIN;
+};;;;;
 Panel.prototype.template = function (id, type, name, data, path) {
     var help = this.helps[type] ? '<span class="help"><a href="' + this.helps[type] + '" data-lity><img src="/static/movie.png"></a></span>' : '';
     var tag = $('<div class="panel panel-default" data-panel_id="' + id + '">\
               <div class="panel-heading">[' + type + '] ' + name + help + '</div>\
                 <table id="viewer_table2" class="table">\
                     <tr>\
-                        <td class="data"><pre><code>' + data + '</code></pre></td>\
+                        <td class="data"><pre style="max-height:' + this.getViewerOptimizedMaxHeight() + 'px"><code>' + data + '</code></pre></td>\
                     </tr>\
                 </table>\
             </div>');
