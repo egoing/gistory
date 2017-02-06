@@ -82,6 +82,9 @@ function Panel() {
         'logs': 'https://youtu.be/0-ZaET1k6yQ',
         'HEAD': 'https://youtu.be/FFa_HrKGtkI',
         'refs': 'https://youtu.be/FFa_HrKGtkI'
+        'refs': 'https://youtu.be/FFa_HrKGtkI',
+        'FETCH_HEAD' : 'https://youtu.be/QpTzoiiYoV4',
+        'config' : 'https://youtu.be/cu8qKGxpURQ'
     }
 }
 Panel.nl2br = function (str, is_xhtml) {
