@@ -93,3 +93,25 @@ pre {
     background-color: rgba(0, 0, 0, .5);
     -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5);
 }
+
+.container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 0;
+}
+
+.element-list {
+    flex-basis: 400px;
+    flex-grow: 0;
+    margin-right: 2rem;
+}
+
+.viewer {
+    flex-grow: 1
+}
+
+.container-fluid {
+    margin: 0 !important;
+    padding: 0 !important;
+}

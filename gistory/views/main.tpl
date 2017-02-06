@@ -23,8 +23,8 @@
   <body>
     <div class="container-fluid">
       <div class="page-header"><h1>Gistory</h1></div>
-      <div class="row">
-        <div class="col-md-3 element-list">
+      <div class="container">
+        <div class="element-list">
             <div class="list-group">
                 % for item in elements:
                     <a href="#viewer"
@@ -35,7 +35,7 @@
                 % end
             </div>
         </div>
-        <div class="col-md-9 viewer" id="viewer">
+        <div class="viewer" id="viewer">
         </div>
       </div>
     </div>
