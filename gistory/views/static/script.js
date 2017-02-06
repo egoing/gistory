@@ -71,6 +71,22 @@ $(document).on('click', '.sha1', function (e) {
         data: {object: _object}
     })
 });
+
+$(document).on('click', '.refs', function (e) {
+    e.preventDefault();
+    var _path = $(this).text();
+    var _parent = $(this).parents('.panel');
+    setActiveExceptSameParent.call(this);
+    $.ajax({
+        url: '/ajax/element',
+        method: 'POST',
+        success: function (result) {
+            _parent.nextAll().remove();
+            panelManager.add(_parent.data('panel_id'), result.type, result.name, result.data)
+        },
+        data: {path: './.git/'+_path}
+    })
+});
 function Panel() {
     this.panel_id = 0;
     this.panels = [];
@@ -81,7 +97,6 @@ function Panel() {
         'ORIG_HEAD': 'https://youtu.be/0-ZaET1k6yQ',
         'logs': 'https://youtu.be/0-ZaET1k6yQ',
         'HEAD': 'https://youtu.be/FFa_HrKGtkI',
-        'refs': 'https://youtu.be/FFa_HrKGtkI'
         'refs': 'https://youtu.be/FFa_HrKGtkI',
         'FETCH_HEAD' : 'https://youtu.be/QpTzoiiYoV4',
         'config' : 'https://youtu.be/cu8qKGxpURQ'
@@ -91,11 +106,11 @@ Panel.nl2br = function (str, is_xhtml) {
     var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br ' + '/>' : '<br>'; // Adjust comment to avoid issue on phpjs.org display
     return (str + '')
         .replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
-};
+}
 Panel.prototype.getViewerOptimizedMaxHeight = function () {
     var MARGIN = 130;
     return $(window).height() - $('.element-list').offset().top - MARGIN;
-};;;;;
+}
 Panel.prototype.template = function (id, type, name, data, path) {
     var help = this.helps[type] ? '<span class="help"><a href="' + this.helps[type] + '" data-lity><img src="/static/movie.png"></a></span>' : '';
     var tag = $('<div class="panel panel-default" data-panel_id="' + id + '">\
@@ -107,11 +122,21 @@ Panel.prototype.template = function (id, type, name, data, path) {
                 </table>\
             </div>');
     return tag;
-};
-Panel.prototype.add = function (caller_panel_id, type, name, data, path) {
+}
+function replaceSha1(data) {
     reg = /\b([a-f0-9]{40})\b/g;
-    data = escapeHtml(data);
     data = data.replace(reg, '<a href="#" class="sha1">$1</a>');
+    return data;
+}
+function replaceRef(data) {
+    var reg = /[^:,^+]refs(\/.+)?(\/\w+)/g;
+    data = data.replace(reg, '<a href="#" class="refs">refs$1$2</a> ');
+    return data;
+}
+Panel.prototype.add = function (caller_panel_id, type, name, data, path) {
+    data = escapeHtml(data);
+    data = replaceSha1(data);
+    data = replaceRef(data);
     var new_panel = this.template(caller_panel_id + 1, type, name, data, path);
     this.panels.push(new_panel);
     $('.viewer').append(new_panel)
@@ -121,4 +146,4 @@ panelManager = new Panel();
 $('.list-group a').each(function () {
     var $this = $(this);
     var path = $this.data('path');
-});
+})
