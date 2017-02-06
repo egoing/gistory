@@ -34,7 +34,7 @@ function scrollViewerToTop() {
 }
 function setActive(target) {
     $('a').removeClass('active');
-    target.addClass('active');
+    $(target).addClass('active');
 }
 $('.element').on('click', function (e) {
     e.preventDefault();
@@ -52,10 +52,15 @@ $('.element').on('click', function (e) {
     })
 });
 
+function setActiveExceptSameParent() {
+    $(this).parent().find('a').removeClass('active');
+    $(this).addClass('active');
+}
 $(document).on('click', '.sha1', function (e) {
     e.preventDefault();
     var _object = $(this).text();
     var _parent = $(this).parents('.panel');
+    setActiveExceptSameParent.call(this);
     $.ajax({
         url: '/ajax/object',
         method: 'POST',
