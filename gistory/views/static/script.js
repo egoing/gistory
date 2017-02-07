@@ -123,23 +123,23 @@ Panel.prototype.template = function (id, type, name, data, path) {
             </div>');
     return tag;
 }
-function replaceSha1(data) {
+function linkSha1(data) {
     reg = /\b([a-f0-9]{40})\b/g;
     data = data.replace(reg, '<a href="#" class="sha1">$1</a>');
     return data;
 }
-function replaceRef(data) {
+function linkRef(data) {
     var reg = /[^:,^+]refs(\/.+)?(\/\w+)/g;
     data = data.replace(reg, '<a href="#" class="refs">refs$1$2</a> ');
     return data;
 }
 Panel.prototype.add = function (caller_panel_id, type, name, data, path) {
     data = escapeHtml(data);
-    data = replaceSha1(data);
-    data = replaceRef(data);
+    data = linkSha1(data);
+    data = linkRef(data);
     var new_panel = this.template(caller_panel_id + 1, type, name, data, path);
     this.panels.push(new_panel);
-    $('.viewer').append(new_panel)
+    $('.viewer').append(new_panel);
 };
 panelManager = new Panel();
 
