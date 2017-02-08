@@ -12,7 +12,7 @@ parser.add_argument("path", help="Path of .git directory.", nargs='?')
 parser.add_argument("-p", "--port", help="web server port", type=int)
 parser.add_argument("-l", "--limit", help="limit the number of object", type=int, default=500)
 args = parser.parse_args()
-path = args.path if args.path else './'
+path = args.path if args.path else '.'
 
 def pretty_date(time=False):
     """
@@ -61,9 +61,9 @@ def pretty_date(time=False):
 @route('/')
 def hello():
     _files = []
-    for file in GitElement.getFileRecursivly(path + '.git', args.limit):
+    for file in GitElement.getFileRecursivly(os.path.join(path, '.git'), args.limit):
         _files.append([file[0], pretty_date(int(file[1]))])
-    return template(os.path.join(packagePath,'views','main.tpl'), elements=_files)
+    return template(os.path.join('gistory','views','main.tpl'), elements=_files)
 
 
 from gistory.bottle import static_file
@@ -90,7 +90,7 @@ def ajax_object():
 
 def main():
     _port = args.port if args.port else 8805
-    run(host='0.0.0.0', port=_port, debug=False)
+    run(host='0.0.0.0', port=_port, debug=True)
 
 
 if __name__ == "__main__":

@@ -27,6 +27,20 @@ class Data(with_metaclass(ABCMeta)):
         str += self._info['type'] + '\t' + self._info['name'] + '\n' + self._info['data'] + '\n\n'
         return str
 
+    def parseText(self, type):
+        try:
+            f = open(self.filepath, 'rb')
+            content = f.read().decode('utf-8')
+            f.close();
+        except UnicodeDecodeError as e:
+            content = "Can't parse"
+        self._info = {
+            'type': type,
+            'name': self.filepath,
+            'data': content,
+            'path': self.filepath
+        }
+
 
 class ObjectData(Data):
     def parse(self):
@@ -35,9 +49,9 @@ class ObjectData(Data):
         path = self.filepath[:-55]
         try:
             import subprocess
-            p = subprocess.Popen("cd " + path + ";git cat-file -p " + object, shell=True, stdout=subprocess.PIPE)
+            p = subprocess.Popen("git cat-file -p " + object, shell=True, stdout=subprocess.PIPE)
             data = p.communicate()[0].decode('utf-8').strip()
-            p = subprocess.Popen("cd " + path + ";git cat-file -t " + object, shell=True, stdout=subprocess.PIPE)
+            p = subprocess.Popen("git cat-file -t " + object, shell=True, stdout=subprocess.PIPE)
             t = p.communicate()[0].decode('utf-8').strip()
         except UnicodeDecodeError as e:
             data = "Can't parsing"
@@ -87,25 +101,11 @@ class ObjectDataById(ObjectData):
 
 class TextData(Data):
     def parse(self):
-        content = open(self.filepath, 'rb').read()
-        self._info = {
-            'type': 'REFE',
-            'name': self.filepath,
-            'data': content.decode('utf-8'),
-            'path': self.filepath
-        }
-
+        self.parseText('REFE')
 
 class HeadData(Data):
     def parse(self):
-        content = open(self.filepath, 'rb').read()
-        self._info = {
-            'type': 'HEAD',
-            'name': self.filepath,
-            'data': content.decode('utf-8'),
-            'path': self.filepath
-        }
-
+        self.parseText('HEAD')
 
 class IndexData(Data):
     def parse(self):
@@ -134,114 +134,60 @@ class PackData(Data):
             'path': self.filepath
         }
 
-
 class LogsData(Data):
     def parse(self):
-        data = open(self.filepath, 'rb').read()
-        self._info = {
-            'type': 'logs',
-            'name': self.filepath,
-            'data': data,
-            'path': self.filepath
-        }
-
+        self.parseText('logs')
 
 class OrigHeadData(Data):
     def parse(self):
-        data = open(self.filepath, 'rb').read()
-        self._info = {
-            'type': 'ORIG_HEAD',
-            'name': self.filepath,
-            'data': data,
-            'path': self.filepath
-        }
-
+        self.parseText('ORIG_HEAD')
 
 class FetchHeadData(Data):
     def parse(self):
-        data = open(self.filepath, 'rb').read()
-        self._info = {
-            'type': 'FETCH_HEAD',
-            'name': self.filepath,
-            'data': data,
-            'path': self.filepath
-        }
-
+        self.parseText('FETCH_HEAD')
 
 class RefsData(Data):
     def parse(self):
-        data = open(self.filepath, 'rb').read()
-        self._info = {
-            'type': 'refs',
-            'name': self.filepath,
-            'data': data,
-            'path': self.filepath
-        }
-
+        self.parseText('refs')
 
 class CommitEditmsgData(Data):
     def parse(self):
-        data = open(self.filepath, 'rb').read()
-        self._info = {
-            'type': 'COMMIT_EDITMSG',
-            'name': self.filepath,
-            'data': data,
-            'path': self.filepath
-        }
-
+        self.parseText('COMMIT_EDITMSG')
 
 class ConfigData(Data):
     def parse(self):
-        data = open(self.filepath, 'rb').read()
-        self._info = {
-            'type': 'config',
-            'name': self.filepath,
-            'data': data,
-            'path': self.filepath
-        }
-
+        self.parseText('config')
 
 class UnknonData(Data):
     def parse(self):
-        try:
-            content = open(self.filepath, 'rb').read().decode('utf-8')
-        except UnicodeDecodeError as e:
-            content = "Can't parse"
-        self._info = {
-            'type': 'unknown',
-            'name': self.filepath,
-            'data': content,
-            'path': self.filepath
-        }
-
+        self.parseText('unknown')
 
 class GitDataObjectFactory:
     @staticmethod
     def getElement(path):
-        path = path.replace('\\', '/')
         if not os.path.isfile(path):
             return None
-        if '.git/objects/pack' in path:
+        if os.path.join('.git','objects','pack') in path:
             return PackData(path)
-        if '.git/logs' in path:
+        if os.path.join('.git','logs') in path:
             return LogsData(path)
-        if '.git/ORIG_HEAD' in path:
+        if os.path.join('.git','ORIG_HEAD') in path:
             return OrigHeadData(path)
-        if '.git/HEAD' in path:
+        if os.path.join('.git','HEAD') in path:
             return HeadData(path)
-        if '.git/FETCH_HEAD' in path:
+        if os.path.join('.git','FETCH_HEAD') in path:
             return FetchHeadData(path)
-        if '.git/config' in path:
+        if os.path.join('.git','config') in path:
             return ConfigData(path)
-        if '.git/COMMIT_EDITMSG' in path:
+        if os.path.join('.git','COMMIT_EDITMSG') in path:
             return CommitEditmsgData(path)
-        if '.git/refs' in path:
+        if os.path.join('.git','refs') in path:
             return RefsData(path)
-        if '.git/objects/info' in path:
+        if os.path.join('.git','objects','info') in path:
             return TextData(path)
-        elif '.git/objects' in path:
+        elif os.path.join('.git','objects') in path:
             return ObjectData(path)
-        elif '.git/index' in path:
+        elif os.path.join('.git','index') in path:
             return IndexData(path)
         return UnknonData(path)
 
@@ -254,13 +200,12 @@ class GitElement:
 
     @staticmethod
     def getFileRecursivly(path, limit, _reverse=True):
-        print(limit)
         import os, operator
         fileList = []
         count = 0
         end = False
         for (_path, _dir, _files) in os.walk(path):
-            _path = _path.replace('\\', '/')
+            #_path = _path.replace('\\', '/')
             for _file in _files:
                 fpath = os.path.join(_path, _file)
                 mtime = os.path.getmtime(fpath);
