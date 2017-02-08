@@ -22,7 +22,10 @@
   </head>
   <body>
     <div class="container-fluid">
-      <div class="page-header"><h1>Gistory</h1></div>
+      <div class="page-header">
+        <h1>Gistory</h1>
+        <a href="https://www.youtube.com/playlist?list=PLuHgQVnccGMC6_JRFarkLPBfSNFwrGVlJ" target="_blank" class="manual"><span>help</span></a>
+      </div>
       <div class="container">
         <div class="element-list">
             <div class="list-group">
