@@ -84,9 +84,9 @@ class ObjectDataById(ObjectData):
         object = self.object
         try:
             import subprocess
-            p = subprocess.Popen("cd " + self.path + ";git cat-file -p " + object, shell=True, stdout=subprocess.PIPE)
+            p = subprocess.Popen("git cat-file -p " + object, shell=True, stdout=subprocess.PIPE)
             data = p.communicate()[0].decode('utf-8').strip()
-            p = subprocess.Popen("cd " + self.path + ";git cat-file -t " + object, shell=True, stdout=subprocess.PIPE)
+            p = subprocess.Popen("git cat-file -t " + object, shell=True, stdout=subprocess.PIPE)
             t = p.communicate()[0].decode('utf-8').strip()
         except UnicodeDecodeError as e:
             data = "Can't parsing"
@@ -110,7 +110,7 @@ class HeadData(Data):
 class IndexData(Data):
     def parse(self):
         import subprocess
-        p = subprocess.Popen("cd " + self.filepath.replace('/index', '') + ";git ls-files --stage", shell=True,
+        p = subprocess.Popen("git ls-files --stage", shell=True,
                              stdout=subprocess.PIPE)
         data = p.communicate()[0].decode('utf-8').strip()
         self._info = {
