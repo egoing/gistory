@@ -99,18 +99,19 @@ function Panel() {
         'HEAD': 'https://youtu.be/FFa_HrKGtkI',
         'refs': 'https://youtu.be/FFa_HrKGtkI',
         'FETCH_HEAD' : 'https://youtu.be/QpTzoiiYoV4',
-        'config' : 'https://youtu.be/cu8qKGxpURQ'
+        'config': 'https://youtu.be/cu8qKGxpURQ',
+        'index': 'https://www.youtube.com/watch?v=qBFF9NwK7a8'
     }
 }
 Panel.nl2br = function (str, is_xhtml) {
     var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br ' + '/>' : '<br>'; // Adjust comment to avoid issue on phpjs.org display
     return (str + '')
         .replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
-}
+};;;
 Panel.prototype.getViewerOptimizedMaxHeight = function () {
     var MARGIN = 130;
     return $(window).height() - $('.element-list').offset().top - MARGIN;
-}
+};;;
 Panel.prototype.template = function (id, type, name, data, path) {
     var help = this.helps[type] ? '<span class="help"><a href="' + this.helps[type] + '" data-lity><img src="/static/movie.png"></a></span>' : '';
     var tag = $('<div class="panel panel-default" data-panel_id="' + id + '">\
@@ -122,7 +123,7 @@ Panel.prototype.template = function (id, type, name, data, path) {
                 </table>\
             </div>');
     return tag;
-}
+};;;
 function linkSha1(data) {
     reg = /\b([a-f0-9]{40})\b/g;
     data = data.replace(reg, '<a href="#" class="sha1">$1</a>');
@@ -140,10 +141,10 @@ Panel.prototype.add = function (caller_panel_id, type, name, data, path) {
     var new_panel = this.template(caller_panel_id + 1, type, name, data, path);
     this.panels.push(new_panel);
     $('.viewer').append(new_panel);
-};
+};;;
 panelManager = new Panel();
 
 $('.list-group a').each(function () {
     var $this = $(this);
     var path = $this.data('path');
-})
+});;;
