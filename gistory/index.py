@@ -63,7 +63,15 @@ def hello():
     _files = []
     for file in GitElement.getFileRecursivly(os.path.join(path, '.git'), args.limit):
         _files.append([file[0], pretty_date(int(file[1]))])
-    return template(os.path.join('gistory','views','main.tpl'), elements=_files)
+    return template(load_template(), elements=_files)
+
+
+def load_template():
+    package_dir = os.path.dirname(os.path.abspath(__file__))
+    f = open(package_dir + '/views/main.tpl')
+    temp = f.read()
+    f.close()
+    return temp
 
 
 from gistory.bottle import static_file
