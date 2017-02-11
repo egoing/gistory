@@ -13,8 +13,6 @@ body {
     border-bottom: none;
 }
 
-
-
 .element-list li {
     word-wrap: break-word;
 }
@@ -24,10 +22,12 @@ body {
 }
 
 .time {
-    display: block;
-    float: right;
     color: gray;
-    font-size: 0.8em
+    font-size: 0.8em;
+    position: absolute;
+    right: 0px;
+    padding: 3px;
+    top: 0px;
 }
 
 .path {
@@ -40,7 +40,8 @@ body {
 
 .list-group-item {
     border-radius: 0 !important;
-    padding: 15px;
+    padding-left: 15px;
+    padding-top: 20px;
 }
 
 .panel {
@@ -100,7 +101,7 @@ pre {
 }
 
 .element-list {
-    flex-basis: 400px;
+    flex-basis: 341px;
     flex-grow: 0;
     margin-right: 2rem;
 }
@@ -130,6 +131,7 @@ h1 {
     background-repeat: no-repeat;
     width: 30px;
     height: 30px;
+    margin-right: 11px;
 }
 
 .manual span {

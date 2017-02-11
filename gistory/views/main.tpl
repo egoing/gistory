@@ -30,10 +30,11 @@
         <div class="element-list">
             <div class="list-group">
                 % for item in elements:
-                    <a href="#viewer"
-                                class="list-group-item element"
-                            data-path="{{item[0]}}">
-                                <span class="path">{{item[0][item[0].find('.git')+5:]}}<span></span> <span class="time">{{item[1]}}</span>
+                    <a  href="#viewer"
+                        class="list-group-item element"
+                        data-path="{{item[0]}}">
+                        <span class="time">{{item[1]}}</span>
+                        <span class="path">{{item[0][item[0].find('.git')+5:]}}<span></span>
                     </a>
                 % end
             </div>
