@@ -114,11 +114,7 @@ Panel.nl2br = function (str, is_xhtml) {
     var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br ' + '/>' : '<br>'; // Adjust comment to avoid issue on phpjs.org display
     return (str + '')
         .replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
-};;;
-Panel.prototype.getViewerOptimizedMaxHeight = function () {
-    var MARGIN = 130;
-    return $(window).height() - $('.element-list').offset().top - MARGIN;
-};;;
+};;
 Panel.prototype.template = function (id, type, name, data, path, extraInfo) {
     var help = this.helps[type] ? '<span class="help"><a href="' + this.helps[type] + '" data-lity><img src="/static/movie.png"></a></span>' : '';
     var extra = extraInfo ? '<tr class="extra"><td>'+extraInfo+'</td></tr>' : '';
@@ -126,13 +122,14 @@ Panel.prototype.template = function (id, type, name, data, path, extraInfo) {
               <div class="panel-heading">[' + type + '] ' + name + help + '</div>\
                 <table id="viewer_table2" class="table">\
                     <tr>\
-                        <td class="data"><pre style="max-height:' + this.getViewerOptimizedMaxHeight() + 'px"><code>' + data + '</code></pre></td>\
+                        <td class="data"><pre><code>' + data + '</code></pre></td>\
                     </tr>\
                     '+extra+'\
+                    <tr class="expand"><td><a href="#">expand</a></td></tr>\
                 </table>\
             </div>');
     return tag;
-};;;
+};;
 function linkSha1(data) {
     reg = /\b([a-f0-9]{40})\b/g;
     data = data.replace(reg, '<a href="#" class="sha1">$1</a>');
@@ -150,10 +147,24 @@ Panel.prototype.add = function (caller_panel_id, type, name, data, path, extraIn
     var new_panel = this.template(caller_panel_id + 1, type, name, data, path, extraInfo);
     this.panels.push(new_panel);
     $('.viewer').append(new_panel);
-};;;
+    this._init_expand();
+};;
+Panel.prototype._init_expand = function () {
+    var last = $('.viewer .panel').last();
+    var expand = last.find('.expand');
+    var pre = last.find('pre');
+    $(expand).on('click', function (e) {
+        e.preventDefault();
+        pre.css('max-height', '');
+        $(this).hide();
+    });;
+    if (pre.height() > 200)
+        expand.show();
+    pre.css('max-height', 200);
+};;
 panelManager = new Panel();
 
 $('.list-group a').each(function () {
     var $this = $(this);
     var path = $this.data('path');
-});;;
+});;

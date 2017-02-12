@@ -78,7 +78,7 @@ a.active {
 }
 
 pre {
-    overflow-y: scroll;
+    overflow-y: hidden;
 }
 
 ::-webkit-scrollbar {
@@ -143,4 +143,8 @@ h1 {
 }
 .extra td{
     padding-left:2rem;
+}
+
+.expand {
+    display: none;
 }
