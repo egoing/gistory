@@ -47,12 +47,15 @@ class ObjectData(Data):
         _fileinfo = os.path.split(self.filepath)
         object = _fileinfo[0][-2:] + _fileinfo[1]
         path = self.filepath[:-55]
+        used = None
         try:
             import subprocess
             p = subprocess.Popen("git cat-file -p " + object, shell=True, stdout=subprocess.PIPE)
             data = p.communicate()[0].decode('utf-8').strip()
             p = subprocess.Popen("git cat-file -t " + object, shell=True, stdout=subprocess.PIPE)
             t = p.communicate()[0].decode('utf-8').strip()
+            if t=='blob':
+                used = self.get_file_names_from_index(object)
         except UnicodeDecodeError as e:
             data = "Can't parsing"
             t = 'unknown'
@@ -60,8 +63,17 @@ class ObjectData(Data):
             'type': t,
             'name': object,
             'data': data,
-            'path': self.filepath
+            'path': self.filepath,
+            'used': used
         }
+
+    def get_file_names_from_index(self, object):
+        import re, subprocess
+        p = subprocess.Popen("git ls-files --stage", shell=True, stdout=subprocess.PIPE)
+        index = p.communicate()[0].decode('utf-8').strip()
+        regex = r"" + object + ".\d+\s+(.+)"
+        backlink = re.findall(regex, index)
+        return backlink
 
     def __str__(self):
         content = self._info['data']

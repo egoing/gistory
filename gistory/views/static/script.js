@@ -36,6 +36,9 @@ function setActive(target) {
     $('a').removeClass('active');
     $(target).addClass('active');
 }
+function createExtraInfo(used) {
+    return used && used.length>0 ? used.join(', ') + ' (This information was not included the original message)' : '';
+}
 $('.element').on('click', function (e) {
     e.preventDefault();
     var _self = $(this);
@@ -45,7 +48,7 @@ $('.element').on('click', function (e) {
         method: 'POST',
         success: function (result) {
             $('.viewer').html('');
-            panelManager.add(0, result.type, result.name, result.data, result.path);
+            panelManager.add(0, result.type, result.name, result.data, result.path, createExtraInfo(result.used));
             scrollViewerToTop();
         },
         data: {path: $(this).data('path')}
@@ -112,14 +115,16 @@ Panel.prototype.getViewerOptimizedMaxHeight = function () {
     var MARGIN = 130;
     return $(window).height() - $('.element-list').offset().top - MARGIN;
 };;;
-Panel.prototype.template = function (id, type, name, data, path) {
+Panel.prototype.template = function (id, type, name, data, path, extraInfo) {
     var help = this.helps[type] ? '<span class="help"><a href="' + this.helps[type] + '" data-lity><img src="/static/movie.png"></a></span>' : '';
+    var extra = extraInfo ? '<tr class="extra"><td>'+extraInfo+'</td></tr>' : '';
     var tag = $('<div class="panel panel-default" data-panel_id="' + id + '">\
               <div class="panel-heading">[' + type + '] ' + name + help + '</div>\
                 <table id="viewer_table2" class="table">\
                     <tr>\
                         <td class="data"><pre style="max-height:' + this.getViewerOptimizedMaxHeight() + 'px"><code>' + data + '</code></pre></td>\
                     </tr>\
+                    '+extra+'\
                 </table>\
             </div>');
     return tag;
@@ -135,10 +140,12 @@ function linkRef(data) {
     return data;
 }
 Panel.prototype.add = function (caller_panel_id, type, name, data, path) {
+Panel.prototype.add = function (caller_panel_id, type, name, data, path, extraInfo) {
     data = escapeHtml(data);
     data = linkSha1(data);
     data = linkRef(data);
     var new_panel = this.template(caller_panel_id + 1, type, name, data, path);
+    var new_panel = this.template(caller_panel_id + 1, type, name, data, path, extraInfo);
     this.panels.push(new_panel);
     $('.viewer').append(new_panel);
 };;;

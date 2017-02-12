@@ -137,3 +137,10 @@ h1 {
 .manual span {
     visibility: hidden;
 }
+
+.extra{
+    font-size:1.2rem;
+}
+.extra td{
+    padding-left:2rem;
+}
