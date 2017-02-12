@@ -114,7 +114,7 @@ Panel.nl2br = function (str, is_xhtml) {
     var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br ' + '/>' : '<br>'; // Adjust comment to avoid issue on phpjs.org display
     return (str + '')
         .replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
-};;
+};
 Panel.prototype.template = function (id, type, name, data, path, extraInfo) {
     var help = this.helps[type] ? '<span class="help"><a href="' + this.helps[type] + '" data-lity><img src="/static/movie.png"></a></span>' : '';
     var extra = extraInfo ? '<tr class="extra"><td>'+extraInfo+'</td></tr>' : '';
@@ -125,11 +125,11 @@ Panel.prototype.template = function (id, type, name, data, path, extraInfo) {
                         <td class="data"><pre><code>' + data + '</code></pre></td>\
                     </tr>\
                     '+extra+'\
-                    <tr class="expand"><td><a href="#">expand</a></td></tr>\
+                    <tr class="expand"><td><a href="#">+expand</a></td></tr>\
                 </table>\
             </div>');
     return tag;
-};;
+};
 function linkSha1(data) {
     reg = /\b([a-f0-9]{40})\b/g;
     data = data.replace(reg, '<a href="#" class="sha1">$1</a>');
@@ -148,7 +148,7 @@ Panel.prototype.add = function (caller_panel_id, type, name, data, path, extraIn
     this.panels.push(new_panel);
     $('.viewer').append(new_panel);
     this._init_expand();
-};;
+};
 Panel.prototype._init_expand = function () {
     var last = $('.viewer .panel').last();
     var expand = last.find('.expand');
@@ -157,14 +157,15 @@ Panel.prototype._init_expand = function () {
         e.preventDefault();
         pre.css('max-height', '');
         $(this).hide();
-    });;
-    if (pre.height() > 200)
+    });
+    var MAX_HEIGHT = 300;
+    if (pre.height() > MAX_HEIGHT)
         expand.show();
-    pre.css('max-height', 200);
-};;
+    pre.css('max-height', MAX_HEIGHT);
+};
 panelManager = new Panel();
 
 $('.list-group a').each(function () {
     var $this = $(this);
     var path = $this.data('path');
-});;
+});
