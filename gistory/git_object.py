@@ -93,21 +93,25 @@ class ObjectDataById(ObjectData):
         self.parse()
 
     def parse(self):
-        object = self.object
+        obj = self.object
+        used = None
         try:
             import subprocess
-            p = subprocess.Popen("git cat-file -p " + object, shell=True, stdout=subprocess.PIPE)
+            p = subprocess.Popen("git cat-file -p " + obj, shell=True, stdout=subprocess.PIPE)
             data = p.communicate()[0].decode('utf-8').strip()
-            p = subprocess.Popen("git cat-file -t " + object, shell=True, stdout=subprocess.PIPE)
+            p = subprocess.Popen("git cat-file -t " + obj, shell=True, stdout=subprocess.PIPE)
             t = p.communicate()[0].decode('utf-8').strip()
+            if t=='blob':
+                used = self.get_file_names_from_index(obj)
         except UnicodeDecodeError as e:
             data = "Can't parsing"
             t = 'unknown'
         self._info = {
             'type': t,
-            'name': object,
+            'name': obj,
             'data': data,
-            'path': self.filepath
+            'path': self.filepath,
+            'used': used
         }
 
 
@@ -160,7 +164,15 @@ class FetchHeadData(Data):
 
 class RefsData(Data):
     def parse(self):
-        self.parseText('refs')
+        import subprocess
+        p = subprocess.Popen("git show-ref -s " + self.filepath, shell=True, stdout=subprocess.PIPE)
+        data = p.communicate()[0].decode('utf-8').strip()
+        self._info = {
+            'type': 'refs',
+            'name': self.filepath,
+            'data': data,
+            'path': self.filepath
+        }
 
 class CommitEditmsgData(Data):
     def parse(self):
@@ -177,6 +189,8 @@ class UnknonData(Data):
 class GitDataObjectFactory:
     @staticmethod
     def getElement(path):
+        if path.startswith('refs'):
+            return RefsData(path)
         if not os.path.isfile(path):
             return None
         if os.path.join('.git','objects','pack') in path:
@@ -193,8 +207,6 @@ class GitDataObjectFactory:
             return ConfigData(path)
         if os.path.join('.git','COMMIT_EDITMSG') in path:
             return CommitEditmsgData(path)
-        if os.path.join('.git','refs') in path:
-            return RefsData(path)
         if os.path.join('.git','objects','info') in path:
             return TextData(path)
         elif os.path.join('.git','objects') in path:

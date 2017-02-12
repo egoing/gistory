@@ -59,6 +59,10 @@ function setActiveExceptSameParent() {
     $(this).parent().find('a').removeClass('active');
     $(this).addClass('active');
 }
+function getPathFromOjbectId(_object) {
+    parse = _object.match(/(..)(.+)/);
+    return './.git/objects/' + parse[1] + '/' + parse[2];
+}
 $(document).on('click', '.sha1', function (e) {
     e.preventDefault();
     var _object = $(this).text();
@@ -69,7 +73,7 @@ $(document).on('click', '.sha1', function (e) {
         method: 'POST',
         success: function (result) {
             _parent.nextAll().remove();
-            panelManager.add(_parent.data('panel_id'), result.type, result.name, result.data)
+            panelManager.add(_parent.data('panel_id'), result.type, result.name, result.data, null, createExtraInfo(result.used))
         },
         data: {object: _object}
     })
@@ -87,7 +91,7 @@ $(document).on('click', '.refs', function (e) {
             _parent.nextAll().remove();
             panelManager.add(_parent.data('panel_id'), result.type, result.name, result.data)
         },
-        data: {path: './.git/'+_path}
+        data: {path: _path}
     })
 });
 function Panel() {
@@ -135,16 +139,14 @@ function linkSha1(data) {
     return data;
 }
 function linkRef(data) {
-    var reg = /[^:,^+]refs(\/.+)?(\/\w+)/g;
-    data = data.replace(reg, '<a href="#" class="refs">refs$1$2</a> ');
+    var reg = /[^:,^+]refs(\/.+)?(\/.+)/g;
+    data = data.replace(reg, ' <a href="#" class="refs">refs$1$2</a> ');
     return data;
 }
-Panel.prototype.add = function (caller_panel_id, type, name, data, path) {
 Panel.prototype.add = function (caller_panel_id, type, name, data, path, extraInfo) {
     data = escapeHtml(data);
     data = linkSha1(data);
     data = linkRef(data);
-    var new_panel = this.template(caller_panel_id + 1, type, name, data, path);
     var new_panel = this.template(caller_panel_id + 1, type, name, data, path, extraInfo);
     this.panels.push(new_panel);
     $('.viewer').append(new_panel);
