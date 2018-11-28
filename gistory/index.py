@@ -5,6 +5,7 @@ from gistory import bottle
 from gistory.bottle import route, run, template, request
 from gistory.git_object import *
 
+
 packagePath = os.path.dirname(bottle.__file__)
 
 parser = argparse.ArgumentParser()
@@ -61,7 +62,8 @@ def pretty_date(time=False):
 @route('/')
 def hello():
     _files = []
-    for file in GitElement.getFileRecursivly(os.path.join(path, '.git'), args.limit):
+    gitPath = os.path.join(path, '.git') if os.path.isdir(os.path.join(path, '.git')) else path
+    for file in GitElement.getFileRecursivly(gitPath, args.limit):
         _files.append([file[0], pretty_date(int(file[1]))])
     return template(load_template(), elements=_files)
 
