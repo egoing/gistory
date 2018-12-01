@@ -193,25 +193,25 @@ class GitDataObjectFactory:
             return RefsData(path)
         if not os.path.isfile(path):
             return None
-        if os.path.join('.git','objects','pack') in path:
+        if os.path.join('objects','pack') in path:
             return PackData(path)
-        if os.path.join('.git','logs') in path:
+        if os.path.join('logs') in path:
             return LogsData(path)
-        if os.path.join('.git','ORIG_HEAD') in path:
+        if os.path.join('ORIG_HEAD') in path:
             return OrigHeadData(path)
-        if os.path.join('.git','HEAD') in path:
+        if os.path.join('HEAD') in path:
             return HeadData(path)
-        if os.path.join('.git','FETCH_HEAD') in path:
+        if os.path.join('FETCH_HEAD') in path:
             return FetchHeadData(path)
-        if os.path.join('.git','config') in path:
+        if os.path.join('config') in path:
             return ConfigData(path)
-        if os.path.join('.git','COMMIT_EDITMSG') in path:
+        if os.path.join('COMMIT_EDITMSG') in path:
             return CommitEditmsgData(path)
-        if os.path.join('.git','objects','info') in path:
+        if os.path.join('objects','info') in path:
             return TextData(path)
-        elif os.path.join('.git','objects') in path:
+        elif os.path.join('objects') in path:
             return ObjectData(path)
-        elif os.path.join('.git','index') in path:
+        elif os.path.join('index') in path:
             return IndexData(path)
         return UnknonData(path)
 

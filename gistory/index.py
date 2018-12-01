@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import argparse
+import argparse, sys
 
 from gistory import bottle
 from gistory.bottle import route, run, template, request
@@ -14,6 +14,19 @@ parser.add_argument("-p", "--port", help="web server port", type=int)
 parser.add_argument("-l", "--limit", help="limit the number of object", type=int, default=500)
 args = parser.parse_args()
 path = args.path if args.path else '.'
+
+
+def isGitDir(path):
+    isHead = os.path.isfile(path+'/HEAD')
+    isObject = os.path.isdir(path+'/objects')
+    return isHead and isObject
+
+
+if(isGitDir(path) == False):
+    print('Please execute in .git directory. (.git 디렉토리로 이동한 후에 실행해주세요)')
+    sys.exit()
+
+
 
 def pretty_date(time=False):
     """
@@ -58,22 +71,14 @@ def pretty_date(time=False):
         return str(int(day_diff / 30)) + " months ago"
     return str(int(day_diff / 365)) + " years ago"
 
-def isGitDir(path):
-    isHead = os.path.isfile(path+'/HEAD')
-    isObject = os.path.isdir(path+'/objects')
-    return isHead and isObject
+
 
 @route('/')
 def hello():
     _files = []
     global path
     print(path)
-    if(isGitDir(path) == False):
-        path = os.path.join(path, '.git')
-        if(isGitDir(path) == False):
-            raise Exception('Invalid path. Please specify the .git directory, e.g. gistory my-repo-path/.git')
     for file in GitElement.getFileRecursivly(path, args.limit):
-        print(file[0])
         _files.append([file[0], pretty_date(int(file[1]))])
     return template(load_template(), elements=_files)
 
