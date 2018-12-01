@@ -58,12 +58,22 @@ def pretty_date(time=False):
         return str(int(day_diff / 30)) + " months ago"
     return str(int(day_diff / 365)) + " years ago"
 
+def isGitDir(path):
+    isHead = os.path.isfile(path+'/HEAD')
+    isObject = os.path.isdir(path+'/objects')
+    return isHead and isObject
 
 @route('/')
 def hello():
     _files = []
-    gitPath = os.path.join(path, '.git') if os.path.isdir(os.path.join(path, '.git')) else path
-    for file in GitElement.getFileRecursivly(gitPath, args.limit):
+    global path
+    print(path)
+    if(isGitDir(path) == False):
+        path = os.path.join(path, '.git')
+        if(isGitDir(path) == False):
+            raise Exception('Invalid path. Please specify the .git directory, e.g. gistory my-repo-path/.git')
+    for file in GitElement.getFileRecursivly(path, args.limit):
+        print(file[0])
         _files.append([file[0], pretty_date(int(file[1]))])
     return template(load_template(), elements=_files)
 

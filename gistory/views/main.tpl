@@ -34,7 +34,7 @@
                         class="list-group-item element"
                         data-path="{{item[0]}}">
                         <span class="time">{{item[1]}}</span>
-                        <span class="path">{{item[0][item[0].find('.git')+5:]}}<span></span>
+                        <span class="path">{{item[0]}}<span></span>
                     </a>
                 % end
             </div>
