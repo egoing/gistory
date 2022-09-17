@@ -98,7 +98,10 @@ if py3k:
     from urllib.parse import urlencode, quote as urlquote, unquote as urlunquote
     urlunquote = functools.partial(urlunquote, encoding='latin1')
     from http.cookies import SimpleCookie
-    from collections import MutableMapping as DictMixin
+    if sys.version_info[:2] >= (3, 8):
+        from collections.abc import MutableMapping as DictMixin
+    else:
+        from collections import MutableMapping as DictMixin
     import pickle
     from io import BytesIO
     from configparser import ConfigParser
